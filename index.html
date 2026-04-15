@@ -821,7 +821,7 @@ function renderAdultDrug(){
  document.getElementById('a_mdSec').style.display='block';
  document.getElementById('a_ldRes').style.display='none';
  
- const _usualTxt=d.usual||'';const _usualHtml=_usualTxt?fmtDoseHTML(_usualTxt,pA.wt||null):'';if(_usualHtml&&_usualHtml.trim()){document.getElementById('a_usualVal').innerHTML=_usualHtml;document.getElementById('a_usual').style.display='block';}else document.getElementById('a_usual').style.display='none';
+ const _hasOddCheck=!!(d.dose_odd&&d.dose_odd.length);const _usualTxt=d.usual||(_hasOddCheck?'':extractUsualFromCrcl(d.crcl_full||''));const _usualHtml=_usualTxt?fmtDoseHTML(_usualTxt,pA.wt||null):'';if(_usualHtml&&_usualHtml.trim()){document.getElementById('a_usualVal').innerHTML=_usualHtml;document.getElementById('a_usual').style.display='block';}else document.getElementById('a_usual').style.display='none';
  
  const _hasOdd=!!(d.dose_odd&&d.dose_odd.length);
  document.getElementById('a_dmRow').style.display=_hasOdd?'block':'none';
