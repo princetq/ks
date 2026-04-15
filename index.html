@@ -1005,6 +1005,71 @@ function calcChildLD(){
 }
 
 
+
+function parseGroupedCrcl(text){
+  if(!text||!text.trim())return null;
+  var lines=text.split('\n');
+  var crclPat=/^\s*[-\u2022]?\s*(?:CrCl|eGFR|GFR)\s*[<\u2265>\u2264\d]/i;
+  var sepPat=/^-{3,}$/;
+  var labelPat=/^(Li\u1ec1u\s+th\u01b0\u1eddng|Li\u1ec1u\s+cao|NK\s+\S.*|Nhi\u1ec5m\s+khu\u1ea9n\s+\S.*)\s*:?\s*$/i;
+  var hasGroups=lines.some(function(l){return labelPat.test(l.trim());});
+  if(!hasGroups)return{type:'simple',text:text};
+  var groups=[];var current=null;
+  for(var i=0;i<lines.length;i++){
+    var t=lines[i].trim();
+    if(!t||sepPat.test(t))continue;
+    if(labelPat.test(t)){
+      if(current)groups.push(current);
+      current={label:t.replace(/:$/,'').trim(),rows:[]};
+    } else if(current){
+      current.rows.push(t);
+    }
+  }
+  if(current)groups.push(current);
+  if(groups.length===0)return{type:'simple',text:text};
+  return{type:'grouped',groups:groups};
+}
+
+function renderGroupedCrclHTML(parsed,wt){
+  if(!parsed)return'';
+  if(parsed.type==='simple')return fmtDoseHTML(extractUsualFromCrcl(parsed.text),wt);
+  var groups=parsed.groups;
+  var crclPatR=/^\s*[-\u2022]?\s*(?:CrCl|eGFR|GFR)\s*([<\u2265>\u2264\d][^:]*)/i;
+  var biggestGroup=groups.reduce(function(a,b){return a.rows.length>b.rows.length?a:b;});
+  var crclLevels=biggestGroup.rows.filter(function(r){return crclPatR.test(r);}).map(function(r){
+    var m=r.match(/^\s*[-\u2022]?\s*(?:CrCl|eGFR|GFR)\s*([<\u2265>\u2264\d][^:]*)/i);
+    return m?m[1].trim():r;
+  });
+  if(crclLevels.length===0){
+    var html2='';
+    for(var gi=0;gi<groups.length;gi++){
+      html2+='<div style="font-weight:700;color:#15803d;margin:4px 0 2px">'+groups[gi].label+'</div>';
+      html2+=fmtDoseHTML(groups[gi].rows.join('\n'),wt);
+    }
+    return html2;
+  }
+  var html='<div style="overflow-x:auto;border-radius:8px;border:1px solid #e2e8f0;margin-top:4px">';
+  html+='<table style="width:100%;border-collapse:collapse;font-size:14px"><thead><tr>';
+  html+='<th style="background:#16a34a;color:#fff;padding:6px 8px;text-align:left;white-space:nowrap">CrCl/GFR</th>';
+  for(var gi=0;gi<groups.length;gi++){
+    html+='<th style="background:#16a34a;color:#fff;padding:6px 8px;text-align:left">'+groups[gi].label+'</th>';
+  }
+  html+='</tr></thead><tbody>';
+  for(var i=0;i<crclLevels.length;i++){
+    html+='<tr><td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;white-space:nowrap;font-weight:600">'+crclLevels[i]+'</td>';
+    for(var gi=0;gi<groups.length;gi++){
+      var crclRows=groups[gi].rows.filter(function(r){return crclPatR.test(r);});
+      var row=crclRows[i]||'';
+      var doseText=row.replace(/^\s*[-\u2022]?\s*(?:CrCl|eGFR|GFR)\s*[<\u2265>\u2264\d][^:]*:\s*/i,'').trim();
+      var cellHtml=doseText?fmtDoseHTML(doseText,wt):'<span style="color:#94a3b8">\u2014</span>';
+      html+='<td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;vertical-align:top">'+cellHtml+'</td>';
+    }
+    html+='</tr>';
+  }
+  html+='</tbody></table></div>';
+  return html;
+}
+
 function extractUsualFromCrcl(text){
  if(!text||!text.trim()) return '';
  const crclPat=/^\s*[-•*]?\s*(?:CrCl|eGFR|GFR)\s*[\d≥>≤<]/i;
@@ -1188,8 +1253,14 @@ function renderChildDrug(){
  const _cUsualBox=document.getElementById('c_usualBox');
  const _cUsualVal=document.getElementById('c_usualVal');
  if(_cUsualBox&&_cUsualVal){
-  const _cUsualTxt=d.usual||extractUsualFromCrcl(d.crcl_full||'');
-  if(_cUsualTxt&&hasDose){
+  const _parsed=parseGroupedCrcl(d.crcl_full||'');
+  const _isGrouped=_parsed&&_parsed.type==='grouped';
+  const _cUsualTxt=d.usual||((!_isGrouped)?extractUsualFromCrcl(d.crcl_full||''):'');
+  const _groupedHtml=_isGrouped?renderGroupedCrclHTML(_parsed,pC.wt||null):'';
+  if(_isGrouped){
+   _cUsualVal.innerHTML=_groupedHtml;
+   _cUsualBox.style.display='block';
+  } else if(_cUsualTxt&&hasDose){
    _cUsualVal.innerHTML=fmtDoseHTML(_cUsualTxt,pC.wt||null);
    _cUsualBox.style.display='block';
   } else {
