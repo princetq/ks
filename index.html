@@ -1010,6 +1010,8 @@ function extractUsualFromCrcl(text){
  const crclPat=/^\s*[-•*]?\s*(?:CrCl|eGFR|GFR)\s*[\d≥>≤<]/i;
  const sepPat=/^-{3,}$/;
  const lines=text.split('\n');
+ const hasCrcl=lines.some(l=>crclPat.test(l.trim()));
+ if(!hasCrcl) return String();
  const out=[];
  for(const line of lines){
   const t=line.trim();
