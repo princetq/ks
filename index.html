@@ -1018,6 +1018,7 @@ function extractUsualFromCrcl(text){
   if(!t||crclPat.test(t)||sepPat.test(t)) continue;
   out.push(t);
  }
+ if(out.length===0) return String();
  return out.join('\n').trim();
 }
 function calcWtDose(text,wt){
