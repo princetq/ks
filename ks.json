@@ -459,33 +459,26 @@
       "name": "Amikacin",
       "group": "AMINOGLYCOSID",
       "route": "Tiêm",
-      "crcl_full": "CrCl >100: 7,5 mg/kg q12h\nCrCl 55 - 100: 7,5 mg/kg q15h\nCrCl 40 - 55: 7,5 mg/kg q18h\nCrCl 30 - 39: 7,5 mg/kg q24h\nCrCl 22 - 30: 7,5 mg/kg q30h\nCrCl < 22: 7,5 mg/kg ít nhất 36h",
+      "crcl_full": "Liều thông thường: 7,5 mg/kg tiêm tĩnh mạch mỗi 12 giờ\nLiều kéo dài: 10-15 mg/kg tiêm bắp/tiêm tĩnh mạch mỗi 24 giờ\n---\nCrCl>50: Không cần điều chỉnh liều lượng\nCrCl10-50: 7,5 mg/kg mỗi 24 giờ\nCrCl<10: 7,5 mg/kg mỗi 48 giờ",
       "dose": [
         {
-          "min": 100,
-          "text": "7,5 mg/kg q12h"
+          "min": 50,
+          "text": "Không cần điều chỉnh liều lượng"
         },
         {
-          "min": 55,
-          "text": "7,5 mg/kg q15h"
-        },
-        {
-          "min": 40,
-          "text": "7,5 mg/kg q18h"
-        },
-        {
-          "min": 30,
-          "text": "7,5 mg/kg q24h"
-        },
-        {
-          "min": 22,
-          "text": "7,5 mg/kg q30h"
+          "min": 10,
+          "text": "7,5 mg/kg mỗi 24 giờ"
         },
         {
           "min": 0,
-          "text": "7,5 mg/kg ít nhất 36h"
+          "text": "7,5 mg/kg mỗi 48 giờ"
         }
-      ]
+      ],
+      "dose_type": null,
+      "ihd": "7,5 mg/kg mỗi 48 giờ (+ thêm 3,75 mg/kg) sau khi chạy thận)",
+      "capd": "Chỉ dùng cho viêm phúc mạc: 2 mg/kg đưa thuốcvào khoang màng bụng 1 lần mỗi ngày",
+      "cvvh": "25 mg/kg q48h",
+      "cvvhdf": "25 mg/kg q48h"
     },
     {
       "name": "Gentamicin",
@@ -2027,7 +2020,7 @@
     "version": "v3.2-fixed",
     "compatible": "Tool_ChinhLieu_v31+",
     "generated": "2026-04-07T04:09:45.033Z",
-    "updated": "2026-04-08",
+    "updated": "2026-04-15",
     "fixes": [
       "Gentamicin: tách MDD/ODD thành dose + dose_odd",
       "Imipenem/Cilastatin: 3→5 dose rows",
