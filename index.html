@@ -821,7 +821,7 @@ function renderAdultDrug(){
  document.getElementById('a_mdSec').style.display='block';
  document.getElementById('a_ldRes').style.display='none';
  
- const _usualTxt=d.usual||extractUsualFromCrcl(d.crcl_full||'');if(_usualTxt){document.getElementById('a_usualVal').innerHTML=fmtDoseHTML(_usualTxt);document.getElementById('a_usual').style.display='block';} else document.getElementById('a_usual').style.display='none';
+ const _usualTxt=d.usual||extractUsualFromCrcl(d.crcl_full||'');if(_usualTxt){document.getElementById('a_usualVal').innerHTML=fmtDoseHTML(_usualTxt,pA.wt\|\|null);document.getElementById('a_usual').style.display='block';} else document.getElementById('a_usual').style.display='none';
  
  const _hasOdd=!!(d.dose_odd&&d.dose_odd.length);
  document.getElementById('a_dmRow').style.display=_hasOdd?'block':'none';
@@ -1187,7 +1187,7 @@ function renderChildDrug(){
  if(_cUsualBox&&_cUsualVal){
   const _cUsualTxt=d.usual||extractUsualFromCrcl(d.crcl_full||'');
   if(_cUsualTxt&&hasDose){
-   _cUsualVal.innerHTML=fmtDoseHTML(_cUsualTxt);
+   _cUsualVal.innerHTML=fmtDoseHTML(_cUsualTxt,pC.wt\|\|null);
    _cUsualBox.style.display='block';
   } else {
    _cUsualBox.style.display='none';
@@ -1399,14 +1399,16 @@ function fmtDose(t){
  if(!t) return t;
  return String(t).replace(/\bq(\d+)-(\d+)h\b/gi,'mỗi $1-$2h').replace(/\bq(\d+)h\b/gi,'mỗi $1h');
 }
-function fmtDoseHTML(text){
+function fmtDoseHTML(text,wt){
  if(!text) return '';
  const lines=fmtDose(text).split('\n');
  return lines.map(l=>{
  if(l.trim()==='---') return '<hr class="dose-sep">';
  const m=l.match(/^\[(.+)\]$/);
  if(m) return `<div class="dose-subsec">▸ ${m[1]}</div>`;
- return l.replace(/</g,'<').replace(/>/g,'>');
+ let extra='';
+ if(wt){const wc=calcWtDose(l,wt);if(wc)extra=`<div style="font-size:13px;color:#0369a1;font-weight:600;margin:1px 0 3px 0">≈ ${wc}</div>`;}
+ return l.replace(/</g,'<').replace(/>/g,'>')+extra;
  }).join('<br>').replace(/<br><hr/g,'<hr').replace(/hr><br>/g,'hr>');
 }
 
