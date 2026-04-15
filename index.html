@@ -1012,7 +1012,7 @@ function parseGroupedCrcl(text){
   var lines=text.split('\n');
   var crclPat=/^\s*[-\u2022]?\s*(?:CrCl|eGFR|GFR)\s*[<\u2265>\u2264\d]/i;
   var sepPat=/^-{3,}$/;
-  var labelPat=/^(Li\u1ec1u\s+th\u01b0\u1eddng|Li\u1ec1u\s+cao|NK\s+\S.*|Nhi\u1ec5m\s+khu\u1ea9n\s+\S.*)\s*:?\s*$/i;
+  var labelPat=/^(Li\u1ec1u\s+th\u01b0\u1eddng|Li\u1ec1u\s+cao|Li\u1ec1u\s+t\u1ed1i\s+\u0111a|Liều tối đa|Liều thường|Liều cao|NK\s+\S.*|Nhi\u1ec5m\s+khu\u1ea9n\s+\S.*)\s*:?\s*$/i;
   var hasGroups=lines.some(function(l){return labelPat.test(l.trim());});
   if(!hasGroups)return{type:'simple',text:text};
   var groups=[];var current=null;
