@@ -1247,7 +1247,14 @@ function renderChildDrug(){
  
  const tw=document.getElementById('c_tblWrap');
  const cfSec=document.getElementById('c_crclFullSec');
- if(tw) tw.style.display=hasDose?'block':'none';
+ if(tw){
+   if(_isGrouped){
+    tw.innerHTML=renderGroupedCrclHTML(_parsed,pC.wt||null);
+    tw.style.display='block';
+   } else {
+    tw.style.display=hasDose?'block':'none';
+   }
+  }
  if(cfSec) cfSec.style.display=(!hasDose&&d.crcl_full)?'block':'none';
  if(cfSec&&!hasDose) document.getElementById('c_crclFullVal').textContent=fmtDose(d.crcl_full||'Không có dữ liệu');
  const _cUsualBox=document.getElementById('c_usualBox');
@@ -1255,16 +1262,11 @@ function renderChildDrug(){
  if(_cUsualBox&&_cUsualVal){
   const _parsed=parseGroupedCrcl(d.crcl_full||'');
   const _isGrouped=_parsed&&_parsed.type==='grouped';
-  const _cUsualTxt=d.usual||((!_isGrouped)?extractUsualFromCrcl(d.crcl_full||''):'');
-  const _groupedHtml=_isGrouped?renderGroupedCrclHTML(_parsed,pC.wt||null):'';
-  if(_isGrouped){
-   _cUsualVal.innerHTML=_groupedHtml;
-   _cUsualBox.style.display='block';
-  } else if(_cUsualTxt&&hasDose){
-   _cUsualVal.innerHTML=fmtDoseHTML(_cUsualTxt,pC.wt||null);
-   _cUsualBox.style.display='block';
+  if(!_isGrouped&&(d.usual||extractUsualFromCrcl(d.crcl_full||""))&&hasDose){
+   _cUsualVal.innerHTML=fmtDoseHTML(d.usual||extractUsualFromCrcl(d.crcl_full||""),pC.wt||null);
+   _cUsualBox.style.display="block";
   } else {
-   _cUsualBox.style.display='none';
+   _cUsualBox.style.display="none";
   }
  }
  const tb=document.getElementById('c_tbl');
