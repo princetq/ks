@@ -526,7 +526,8 @@
           "min": 0,
           "text": "Tham khảo MDD"
         }
-      ]
+      ],
+      "dose_type": null
     },
     {
       "name": "Clarithromycin",
@@ -749,7 +750,7 @@
       "name": "Fosfomycin natri",
       "group": "KHÁNG KHUẨN KHÁC",
       "route": "Tiêm",
-      "crcl_full": "Liều thường: 12-24g q8-12h (viêm màng não: 16-24g q6-8h)\nBN suy thận - Liều nạp: 100% liều TT (tối đa 8g), sau đó duy trì:\n- CrCl >40: Không cần hiệu chỉnh\n- CrCl 30-<40: 70% liều TT (q8-12h)\n- CrCl 20-<30: 60% liều TT (q8-12h)\n- CrCl 10-<20: 40% liều TT (q8-12h)\n- CrCl <10: 20% liều TT (q12-24h)",
+      "crcl_full": "Liều thường: 12-24g q8-12h (viêm màng não: 16-24g q6-8h)\nBN suy thận - Liều nạp: 100% liều TT (tối đa 8g), sau đó duy trì theo liều hiệu chỉnh\n- CrCl >40: Không cần hiệu chỉnh\n- CrCl 30-<40: 70% liều TT (q8-12h)\n- CrCl 20-<30: 60% liều TT (q8-12h)\n- CrCl 10-<20: 40% liều TT (q8-12h)\n- CrCl <10: 20% liều TT (q12-24h)",
       "ihd": "2g q48h",
       "capd": "Không có dữ liệu",
       "crrt": "6-8g q12h",
@@ -774,7 +775,8 @@
           "min": 0,
           "text": "20% liều TT (q12-24h)"
         }
-      ]
+      ],
+      "dose_type": null
     },
     {
       "name": "Fluconazole",
