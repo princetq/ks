@@ -1260,6 +1260,7 @@ function renderChildDrug(){
  if(cfSec) cfSec.style.display=(!hasDose&&d.crcl_full)?'block':'none';
  if(cfSec&&!hasDose) document.getElementById('c_crclFullVal').textContent=fmtDose(d.crcl_full||'Không có dữ liệu');
  const _cUsualBox=document.getElementById('c_usualBox');
+ const _cUsualBoxR=document.getElementById('c_usualBox');if(_cUsualBoxR){_cUsualBoxR.style.display='none';_cUsualBoxR.querySelector&&(_cUsualBoxR.querySelector('#c_usualVal')||{innerHTML:''}).innerHTML='';}
  const _cUsualVal=document.getElementById('c_usualVal');
  if(_cUsualBox&&_cUsualVal){
   const _parsed=parseGroupedCrcl(d.crcl_full||'');
