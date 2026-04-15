@@ -1245,13 +1245,13 @@ function renderChildDrug(){
  mdEl.innerHTML=fmtDose(rec).replace(/\n/g,'<br>')+(wtCalcRec?`<div style="font-size:16px;color:#0369a1;font-weight:600;margin-top:6px">🔢 ${wtCalcRec}</div>`:'');
  }
  
- const _parsed=parseGroupedCrcl(d.crcl_full||'');
- const _isGrouped=_parsed&&_parsed.type==='grouped';
+ const _grpParsed=parseGroupedCrcl(d.crcl_full||'');
+ const _isGrouped=_grpParsed&&_grpParsed.type==='grouped';
  const tw=document.getElementById('c_tblWrap');
  const cfSec=document.getElementById('c_crclFullSec');
  if(tw){
    if(_isGrouped){
-    tw.innerHTML=renderGroupedCrclHTML(_parsed,pC.wt||null);
+    tw.innerHTML=renderGroupedCrclHTML(_grpParsed,pC.wt||null);
     tw.style.display='block';
    } else {
     tw.style.display=hasDose?'block':'none';
