@@ -1260,7 +1260,6 @@ function renderChildDrug(){
  if(cfSec) cfSec.style.display=(!hasDose&&d.crcl_full)?'block':'none';
  if(cfSec&&!hasDose) document.getElementById('c_crclFullVal').textContent=fmtDose(d.crcl_full||'Không có dữ liệu');
  const _cUsualBox=document.getElementById('c_usualBox');
- const _cUsualBoxR=document.getElementById('c_usualBox');if(_cUsualBoxR){_cUsualBoxR.style.display='none';_cUsualBoxR.querySelector&&(_cUsualBoxR.querySelector('#c_usualVal')||{innerHTML:''}).innerHTML='';}
  const _cUsualVal=document.getElementById('c_usualVal');
  if(_cUsualBox&&_cUsualVal){
   const _parsed=parseGroupedCrcl(d.crcl_full||'');
@@ -1275,7 +1274,7 @@ function renderChildDrug(){
  const tb=document.getElementById('c_tbl');
  if(tb){
  tb.innerHTML='';
- if(hasDose){
+ if(hasDose&&!_isGrouped){
  d.dose.forEach((row,i)=>{
  const prev=i>0?d.dose[i-1]:null;
  const lo=row.min,hi=prev?prev.min-1:999;
