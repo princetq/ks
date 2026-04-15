@@ -522,8 +522,9 @@ tr.hl td:first-child::before{content:'▶ '}
  <div id="c_tblSec" style="margin-top:10px">
  <div class="sec-lbl" style="margin-bottom:6px">Hiệu chỉnh theo <span id="c_tblHdr">eGFR/CrCl</span>:</div>
  <div id="c_tblWrap">
- <div class="tw"><table><thead><tr><th width="34%"><span id="c_tblColHdr">eGFR (mL/ph)</span></th><th>Liều khuyến cáo</th></tr></thead>
+ <div class="tw" id="c_standard_tw"><table><thead><tr><th width="34%"><span id="c_tblColHdr">eGFR (mL/ph)</span></th><th>Liều khuyến cáo</th></tr></thead>
  <tbody id="c_tbl"></tbody></table></div>
+ <div id="c_grouped_tw"></div>
  </div>
  <div id="a_crclFullSec" style="display:none">
  <div id="a_crclFullVal" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;font-size:15px;color:#1e293b;line-height:1.7;white-space:pre-wrap"></div>
@@ -536,7 +537,7 @@ tr.hl td:first-child::before{content:'▶ '}
  </div>
 
  <button class="reset-btn" id="resetAllBtn" style="display:none" onclick="resetAll()">↩ Tra cứu lại từ đầu</button>
- <div class="footer"><span>DS. Ngọc Anh – BVĐK Tuyên Quang</span></div>
+ <div class="footer"><span>DS. Ngọc Anh – Khoa Dược - BVĐK Tuyên Quang</span></div>
 </div>
 
 <script>
@@ -980,7 +981,7 @@ function updateSchwartzNote(meth){
  const el=document.getElementById('c_schwartzNote');
  if(!el) return;
  if(meth==='crcl')
-  el.innerHTML='CrCl tuyệt đối = eGFR (Schwartz 2009) &times; BSA / 1,73. Chỉ dùng tham khảo; cân nhắc lâm sàng.';
+  el.innerHTML='CrCl tuyệt đối = eGFR (Schwartz 2009) × BSA / 1,73. Chỉ dùng tham khảo; cân nhắc lâm sàng.';
  else
   el.innerHTML='Công thức Schwartz cải tiến (2009). Chỉ dùng tham khảo; cân nhắc lâm sàng.';
 }
@@ -1248,16 +1249,22 @@ function renderChildDrug(){
  const _grpParsed=parseGroupedCrcl(d.crcl_full||'');
  const _isGrouped=_grpParsed&&_grpParsed.type==='grouped';
  const tw=document.getElementById('c_tblWrap');
+ const stdTw=document.getElementById('c_standard_tw');
+ const grpTw=document.getElementById('c_grouped_tw');
  const cfSec=document.getElementById('c_crclFullSec');
- if(tw){
-   if(_isGrouped){
-    tw.innerHTML=renderGroupedCrclHTML(_grpParsed,pC.wt||null);
-    tw.style.display='block';
-   } else {
-    tw.innerHTML='';
-    tw.style.display=hasDose?'block':'none';
+ if(tw && stdTw && grpTw){
+    if(_isGrouped){
+     grpTw.innerHTML=renderGroupedCrclHTML(_grpParsed,pC.wt||null);
+     grpTw.style.display='block';
+     stdTw.style.display='none';
+     tw.style.display='block';
+    } else {
+     grpTw.innerHTML='';
+     grpTw.style.display='none';
+     stdTw.style.display=hasDose?'block':'none';
+     tw.style.display=hasDose?'block':'none';
+    }
    }
-  }
  if(cfSec) cfSec.style.display=(!hasDose&&d.crcl_full)?'block':'none';
  if(cfSec&&!hasDose) document.getElementById('c_crclFullVal').textContent=fmtDose(d.crcl_full||'Không có dữ liệu');
  const _cUsualBox=document.getElementById('c_usualBox');
