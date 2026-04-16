@@ -491,7 +491,7 @@ tr.hl td:first-child::before{content:'▶ '}
  </div>
  
   <div id="c_usualBox" class="usual" style="display:none;margin-bottom:10px">
-  <span style="font-size:12px;font-weight:700;color:#64748b;display:block;text-transform:uppercase;margin-bottom:2px">Lieu thuong dung / Luu y lieu (tham khao)</span>
+  <span style="font-size:12px;font-weight:700;color:#64748b;display:block;text-transform:uppercase;margin-bottom:2px">Liều thường dùng (tham khảo)</span>
   <div id="c_usualVal" style="font-weight:600;white-space:pre-wrap;line-height:1.6"></div>
  </div>
  <div id="c_ldSec" style="display:none; margin-bottom:12px;">
@@ -1095,20 +1095,42 @@ function extractUsualFromCrcl(text){
   if(!t||crclPat.test(t)||sepPat.test(t)) continue;
   out.push(t);
  }
- const hasDose=out.some(l=>/[0-9]/.test(l));if(!hasDose) return String();
- return out.join('\n').trim();
+ const cleanOut = [];
+ for(let i=0; i<out.length; i++) {
+     if (/^(Liều thường|Liều cao|Liều duy trì|Liều khuyến cáo)\s*:?$/i.test(out[i])) {
+         if (i === out.length - 1 || /:$/.test(out[i+1])) continue;
+     }
+     cleanOut.push(out[i]);
+ }
+ const finalStr = cleanOut.join('\n').trim();
+ const hasDose=/[0-9]/.test(finalStr);if(!hasDose) return String();
+ return finalStr;
 }
+
 function calcWtDose(text,wt){
  if(!text||!wt)return null;
  const results=[];
- const re=/(\d+\.?\d*)\s*[-–]\s*(\d+\.?\d*)\s*mg\/kg|(\d+\.?\d*)\s*mg\/kg/gi;
+ const re=/((?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?)\s*[-–]\s*((?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?)\s*(mg(?:\s+[a-zA-Z]+)?|g|IU|UI)\/kg|((?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?)\s*(mg(?:\s+[a-zA-Z]+)?|g|IU|UI)\/kg/gi;
  let m;
+ const fmt = (v) => {
+    let str = Number.isInteger(v) ? v.toString() : v.toFixed(1).replace('.',',');
+    let parts = str.split(',');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return parts.join(',');
+ };
  while((m=re.exec(text))!==null){
- if(m[1]&&m[2]){
- results.push(`${(parseFloat(m[1])*wt).toFixed(0)}–${(parseFloat(m[2])*wt).toFixed(0)} mg`);
- }else if(m[3]){
- results.push(`${(parseFloat(m[3])*wt).toFixed(0)} mg`);
- }
+  if(m[1]&&m[2]){
+   let v1 = parseFloat(m[1].replace(/\./g,'').replace(',','.'));
+   let v2 = parseFloat(m[2].replace(/\./g,'').replace(',','.'));
+   let unit = m[3].trim();
+   if(unit === 'g') { v1*=1000; v2*=1000; unit='mg'; }
+   results.push(`${fmt(v1*wt)}–${fmt(v2*wt)} ${unit}`);
+  }else if(m[4]){
+   let v3 = parseFloat(m[4].replace(/\./g,'').replace(',','.'));
+   let unit = m[5].trim();
+   if(unit === 'g') { v3*=1000; unit='mg'; }
+   results.push(`${fmt(v3*wt)} ${unit}`);
+  }
  }
  return results.length?`≈ ${results.join(' / ')} (${wt}kg)`:null;
 }
@@ -1283,15 +1305,23 @@ function renderChildDrug(){
  if(_cUsualBox&&_cUsualVal){
   const _parsed=parseGroupedCrcl(d.crcl_full||'');
   const _isGrouped=_parsed&&_parsed.type==='grouped';
+  const _hasCrclLines = /^\s*[-•*]?\s*(?:CrCl|eGFR|GFR)\s*[\d≥>≤<]/im.test(d.crcl_full || '');
+  
   if(!hasDose) {
    const _txt = d.usual || d.crcl_full || 'Không có dữ liệu';
    _cUsualVal.innerHTML=fmtDoseHTML(_txt,pC.wt||null);
    _cUsualBox.style.display="block";
-  } else if(!_isGrouped&&(d.usual||extractUsualFromCrcl(d.crcl_full||""))){
-   _cUsualVal.innerHTML=fmtDoseHTML(d.usual||extractUsualFromCrcl(d.crcl_full||""),pC.wt||null);
-   _cUsualBox.style.display="block";
   } else {
-   _cUsualBox.style.display="none";
+   let _uTxt = d.usual || "";
+   if(!_uTxt && !_isGrouped) {
+     _uTxt = _hasCrclLines ? extractUsualFromCrcl(d.crcl_full||"") : d.crcl_full;
+   }
+   if(_uTxt){
+    _cUsualVal.innerHTML=fmtDoseHTML(_uTxt,pC.wt||null);
+    _cUsualBox.style.display="block";
+   } else {
+    _cUsualBox.style.display="none";
+   }
   }
  }
  const tb=document.getElementById('c_tbl');
