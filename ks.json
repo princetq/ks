@@ -1101,7 +1101,7 @@
       "name": "Ceftazidim",
       "group": "BETALACTAM",
       "route": "Tiêm",
-      "crcl_full": "Liều thường:\n- GFR >50: 90-150mg/kg/ngày q8h\n- GFR 30-50: 100mg/kg/ngày q12h\n- GFR 10-29: 50mg/kg/ngày q24h\n- GFR <10: 25mg/kg/ngày q24h\nNK nặng Pseudomonas spp.: 200-300mg/kg/ngày q8h",
+      "crcl_full": "Liều thường:\n- GFR >50: 90-150mg/kg/ngày q8h\n- GFR 30-50: 100mg/kg/ngày q12h\n- GFR 10-29: 50mg/kg/ngày q24h\n- GFR <10: 25mg/kg/ngày q24h\nNK nặng Pseudomonas spp.:\n200-300mg/kg/ngày q8h",
       "dose_type": "gfr",
       "note": "Liều tối đa: 6g/ngày; 12g/ngày với NK nặng do Pseudomonas spp.",
       "dose": [
@@ -1119,7 +1119,7 @@
         },
         {
           "min": 0,
-          "text": "25mg/kg/ngày q24h\nNK nặng Pseudomonas spp.: 200-300mg/kg/ngày q8h"
+          "text": "25mg/kg/ngày q24h\n"
         }
       ]
     },
@@ -2022,7 +2022,7 @@
     "version": "v3.2-fixed",
     "compatible": "Tool_ChinhLieu_v31+",
     "generated": "2026-04-07T04:09:45.033Z",
-    "updated": "2026-04-15",
+    "updated": "2026-04-16",
     "fixes": [
       "Gentamicin: tách MDD/ODD thành dose + dose_odd",
       "Imipenem/Cilastatin: 3→5 dose rows",
