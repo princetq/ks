@@ -1014,7 +1014,8 @@ function parseGroupedCrcl(text){
   var sepPat=/^-{3,}$/;
   var labelPat=/^(Li\u1ec1u\s+th\u01b0\u1eddng|Li\u1ec1u\s+cao|Li\u1ec1u\s+t\u1ed1i\s+\u0111a|Liều tối đa|Liều thường|Liều cao|NK\s+\S.*|Nhi\u1ec5m\s+khu\u1ea9n\s+\S.*)\s*:?\s*$/i;
   var hasGroups=lines.some(function(l){return labelPat.test(l.trim());});
-  if(!hasGroups)return{type:'simple',text:text};
+  var hasCrcl=lines.some(function(l){return crclPat.test(l.trim());});
+  if(!hasGroups || !hasCrcl)return{type:'simple',text:text};
   var groups=[];var current=null;
   for(var i=0;i<lines.length;i++){
     var t=lines[i].trim();
@@ -1273,15 +1274,24 @@ function renderChildDrug(){
  if(_cUsualBox&&_cUsualVal){
   const _parsed=parseGroupedCrcl(d.crcl_full||'');
   const _isGrouped=_parsed&&_parsed.type==='grouped';
+  const _hasCrclLines = /^\s*[-•*]?\s*(?:CrCl|eGFR|GFR)\s*[\d≥>≤<]/im.test(d.crcl_full || '');
+  
   if(!hasDose) {
    const _txt = d.usual || d.crcl_full || 'Không có dữ liệu';
    _cUsualVal.innerHTML=fmtDoseHTML(_txt,pC.wt||null);
    _cUsualBox.style.display="block";
-  } else if(!_isGrouped&&(d.usual||extractUsualFromCrcl(d.crcl_full||""))){
-   _cUsualVal.innerHTML=fmtDoseHTML(d.usual||extractUsualFromCrcl(d.crcl_full||""),pC.wt||null);
-   _cUsualBox.style.display="block";
   } else {
-   _cUsualBox.style.display="none";
+   let _uTxt = d.usual || "";
+   if(!_uTxt && !_isGrouped) {
+     // Nếu không có CrCl, lấy toàn bộ text đưa lên Liều thường dùng
+     _uTxt = _hasCrclLines ? extractUsualFromCrcl(d.crcl_full||"") : d.crcl_full;
+   }
+   if(_uTxt){
+    _cUsualVal.innerHTML=fmtDoseHTML(_uTxt,pC.wt||null);
+    _cUsualBox.style.display="block";
+   } else {
+    _cUsualBox.style.display="none";
+   }
   }
  }
  const tb=document.getElementById('c_tbl');
